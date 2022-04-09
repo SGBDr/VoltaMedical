@@ -1,63 +1,61 @@
-import {Component, useStatem} from 'react'
-import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
+import {Component, useState} from 'react'
+import { StyleSheet, Text, View, TextInput, Button, ToastAndroid } from 'react-native';
 
 
 
 export default class ConsulterScreen extends Component{
 
-    raison = "Pourqoi prenez-vous rendez vous ?"
-
     constructor(){
         super()
         this.setState = {
-            nom : "",
-            raison : "",
-            date : "",
+            nom : "___",
+            raison : "Probleme",
+            date : "**, ******* *** à **H**",
             commentaire : ""
         }
     }
 
-    _nom(event){
-        this.setState({nom : event.target.value})
-    }
+    toastY = () => {
+        ToastAndroid.showWithGravityAndOffset(
+          "Votre demande de consultation a été envoyé a votre aide soignant.",
+          ToastAndroid.LONG,
+          ToastAndroid.BOTTOM,
+          25,
+          50
+        );
+    };
 
-    _raison(event){
-        this.setState({raison : event.target.value})
-    }
-
-    _date(event){
-        this.setState({date : event.target.value})
-    }
-
-    _commentaire(event){
-        this.setState({commentaire : event.target.value})
-    }
-
-    //click sur back
-    onBack = (event) => {
-        this.setState({mVisible : true})
-    }
+    toastF = () => {
+        ToastAndroid.showWithGravityAndOffset(
+          "Renseignez tous les champs, pour prendre rendez-vous.",
+          ToastAndroid.LONG,
+          ToastAndroid.BOTTOM,
+          25,
+          50
+        );
+    };
 
     render(){
-        const nom = this.state
-        console.log(nom)
+        const [nom, setNom] = useState("")
+        const [raison, setRaison] = useState("")
+        const [date, setDate] = useState("")
+        const [commentaire, setCommentaire] = useState("")
         return (
             <View style={this.style.container}>
-                <View style={this.style.flex}>
-                    <Text style={this.style.text}>Consulter</Text>
-                    <Button style={this.style.nav} title={"back"} onPress={this.onBack}/>
-                </View>
-                <View style={this.style.separator}></View>
                 <View style={{marginTop: 10, paddingRight: 30, paddingLeft: 30}}>
                     <Text>Votre Nom :</Text>
-                    <TextInput style={this.style.input} onChange={this._event} placeholder={"Msr Mme Volta"}/>
-                    <Text>{this.raison}</Text>
-                    <TextInput style={this.style.input} onChange={this._raison}/>
+                    <TextInput style={this.style.input} onChangeText={text => setNom(text)} placeholder={"Msr Mme Volta"}/>
+                    <Text>Pourqoi prenez-vous rendez vous ?</Text>
+                    <TextInput style={this.style.input} placeholder="J'ai des maux de tete" onChangeText={text => setRaison(text)}/>
                     <Text>Date souhaitez du rendez-vous :</Text>
-                    <TextInput placeholder={"12 Janvier 2022, 18H30"} onChange={this._date}/>
+                    <TextInput style={this.style.input2} onChangeText={text => setDate(text)} placeholder={"12 Janvier 2022, 18H30"}/>
                     <Text>Info supplémentaire ?</Text>
-                    <TextInput style={this.style.input}/>
-                    <Button title={"Prendre Rendez-Vous"} onChange={this._commentaire} style={this.style.button}/>        
+                    <TextInput style={this.style.input} style={this.style.input2} onChangeText={text => setCommentaire(text)} placeholder={"Commentaire ..."}/>
+                    <Button title={"Prendre Rendez-Vous"} onPress={() => {
+                        if(nom.trim() != "" && raison.trim() != "" && date.trim() != "" && commentaire.trim() != "")this.toastY()
+                        else this.toastF()
+                    }}  
+                    style={this.style.button}/>        
                 </View>
             </View>
         )
@@ -71,6 +69,15 @@ export default class ConsulterScreen extends Component{
             padding: 10,
             marginBottom: 5
         },
+        input2 : {
+            height: 100,
+            borderRadius: 5,
+            backgroundColor: 'whitesmoke',
+            padding: 10,
+            marginBottom: 5
+        },
+
+
         button : {
             marginTop: 100,
         },
